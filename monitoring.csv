@@ -1,0 +1,4 @@
+Test Name,Line,Line Type,Line ID,First Run Yield (%),First Run Input Qty,First Run Pass Qty,First Run Fail Qty,First Pass Yield (%),First Round Input Qty,First Round Pass Qty,First Round Fail Qty,WIP in/out *,Retest Pass Rate (%),Retest Pass Qty,SCOF Pass Qty,Total Continue Rate (%),Last Pass Yield (%),Last Round Pass Qty,Last Round Input Qty,WIP Pending Retest Qty
+PACK-AOI-DSP,PACKING_RETAIL,PACKING_RETAIL,P1-L102PJ1,95.29,403,384,19,100.00,403,403,0,0,4.71,19,0,100.00,100.00,403,403,0
+PACK-AOI-DSP,PACKING_RETAIL,PACKING_RETAIL,P1-L102PJ2,96.27,402,387,15,100.00,402,402,0,0,3.73,15,0,100.00,100.00,402,402,0
+PACK-AOI-DSP,PACKING_RETAIL,Total,,95.78,805,771,34,100.00,805,805,0,0,4.22,34,0,100.00,100.00,805,805,0
