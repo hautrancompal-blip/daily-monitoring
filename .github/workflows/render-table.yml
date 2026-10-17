@@ -1,0 +1,64 @@
+name: Render Monitoring Table from CSV
+
+on:
+  push:
+    paths:
+      - 'data/yield_cfn4_all_by_lineid_line.csv' # Kích hoạt khi file CSV thay đổi
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-table:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install pandas
+        run: pip install pandas
+
+      - name: Build README.md from CSV using Python
+        run: |
+          python -c "
+          import pandas as pd
+          from datetime import datetime
+
+          # 1. Đọc file CSV
+          df = pd.read_csv('data/yield_cfn4_all_by_lineid_line.csv')
+
+          # 2. Danh sách 4 Line ID cần lọc
+          target_lines = ['P1-L102PJ1', 'P1-L102PJ2', 'P1-L102PJ3', 'P1-L102PJ4']
+
+          # Lọc dữ liệu chỉ chứa 4 line này
+          filtered_df = df[df['Line ID'].isin(target_lines)]
+
+          today_str = datetime.now().strftime('%Y-%m-%d')
+
+          # 3. Ghi vào README.md
+          with open('README.md', 'w', encoding='utf-8') as f:
+              f.write('# 📊 Bảng Tổng Hợp Dữ Liệu Monitoring Yield\n\n')
+              f.write(f'> *Cập nhật tự động ngày: {today_str}*\n\n')
+              f.write('| Ngày | Tên Line | Line ID | Input Qty | Retest Pass Rate (%) |\n')
+              f.write('| :--- | :--- | :--- | :---: | :---: |\n')
+
+              for _, row in filtered_df.iterrows():
+                  line = str(row.get('Line', '')).strip()
+                  line_id = str(row.get('Line ID', '')).strip()
+                  input_qty = row.get('First Run Input Qty', 0)
+                  retest_rate = row.get('Retest Pass Rate (%)', 0)
+
+                  f.write(f'| {today_str} | {line} | {line_id} | {input_qty} | {retest_rate}% |\n')
+          "
+
+      - name: Commit & Push README
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: cập nhật bảng tổng hợp yield cho 4 lines [skip ci]"
+          branch: main
